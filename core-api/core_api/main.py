@@ -25,7 +25,6 @@ def main():
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        postgres.start()
         await db_pool.initialize()
         await user_repository.initialize()
         yield
