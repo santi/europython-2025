@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from requests import delete
 
 from core_api.models.users import UserRepository, UserCreate, UserResponse
 
@@ -18,15 +19,12 @@ class UserService:
             raise HTTPException(status_code=404, detail="User not found")
         return user
 
-    async def get_user_by_username(self, username: str) -> UserResponse:
-        """Get user by username with error handling"""
-        user = await self.user_repository.get_user_by_username(username)
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        return user
-
     async def get_users(self, skip: int = 0, limit: int = 100) -> list[UserResponse]:
         """Get all users with pagination"""
         if limit > 100:
             limit = 100  # Business rule: max 100 users per request
         return await self.user_repository.get_users(skip, limit)
+    
+    async def delete_users(self):
+        """Delete all users"""
+        await self.user_repository.delete_users()

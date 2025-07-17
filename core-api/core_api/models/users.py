@@ -69,17 +69,6 @@ class UserRepository:
                 row = await cursor.fetchone()
                 return UserResponse(**row) if row else None
 
-    async def get_user_by_username(self, username: str) -> Optional[UserResponse]:
-        """Get user by username"""
-        async with self.db_pool.get_connection() as conn:
-            async with conn.cursor(row_factory=dict_row) as cursor:
-                await cursor.execute(
-                    "SELECT id, name, email, created_at FROM users WHERE username = %s",
-                    (username,),
-                )
-                row = await cursor.fetchone()
-                return UserResponse(**row) if row else None
-
     async def get_users(self, skip: int = 0, limit: int = 100) -> list[UserResponse]:
         """Get all users with pagination"""
         async with self.db_pool.get_connection() as conn:
@@ -91,12 +80,9 @@ class UserRepository:
                 rows = await cursor.fetchall()
                 return [UserResponse(**row) for row in rows]
 
-    async def user_exists(self, username: str, email: str) -> bool:
-        """Check if user exists by username or email"""
+    async def delete_users(self):
+        """Delete all users"""
         async with self.db_pool.get_connection() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute(
-                    "SELECT 1 FROM users WHERE username = %s OR email = %s LIMIT 1",
-                    (username, email),
-                )
-                return await cursor.fetchone() is not None
+                await cursor.execute("DELETE FROM users")
+                await conn.commit()

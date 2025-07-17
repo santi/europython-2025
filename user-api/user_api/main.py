@@ -5,7 +5,6 @@ from fastapi import FastAPI
 from hypercorn.asyncio import serve
 from hypercorn.config import Config
 from contextlib import asynccontextmanager
-from testcontainers.kafka import KafkaContainer
 
 from user_api.services.user_service import UserService
 from user_api.models.users import UserCreate
@@ -16,12 +15,9 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    kafka = KafkaContainer("confluentinc/cp-kafka:7.6.0")
-    kafka.start()
-
     loop = asyncio.get_event_loop()
     producer = AIOKafkaProducer(
-        loop=loop, bootstrap_servers=kafka.get_bootstrap_server()
+        loop=loop, bootstrap_servers="127.0.0.1:9093"
     )
 
     @asynccontextmanager
@@ -29,7 +25,7 @@ def main():
         await producer.start()
         yield
         await producer.stop()
-        kafka.stop()
+
 
     user_service = UserService(producer=producer)
 

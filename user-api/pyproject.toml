@@ -15,7 +15,6 @@ aiokafka = "^0.12.0"
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.12.3"
 pytest = "^8.4.1"
-testcontainers = { extras = ["kafka"], version = "^4.10.0" }
 
 [build-system]
 requires = ["poetry-core"]
