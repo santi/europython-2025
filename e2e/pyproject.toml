@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "user-api"
+version = "0.1.0"
+description = ""
+authors = ["Vemund Santi <vemund@santi.no>"]
+readme = "README.md"
+packages = [{ include = "e2e" }]
+
+[tool.poetry.dependencies]
+python = "^3.13"
+pytest = "^8.4.1"
+pytest-playwright = "^0.7.0"
+requests = "^2.32.4"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.12.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
