@@ -29,20 +29,22 @@ def main():
     db_pool = DatabasePool(connection_string=connection_string)
     user_repository = UserRepository(db_pool=db_pool)
     user_service = UserService(user_repository=user_repository)
-    
+
     loop = asyncio.get_event_loop()
-    consumer = AIOKafkaConsumer("users",
-        loop=loop, bootstrap_servers=kafka.get_bootstrap_server(), group_id="test"
+    consumer = AIOKafkaConsumer(
+        "users",
+        loop=loop,
+        bootstrap_servers=kafka.get_bootstrap_server(),
+        group_id="test",
     )
 
-    
     async def consume_messages():
         async for msg in consumer:
             print(f"Consumed message: {msg.value.decode('utf-8')}")
-            user_create = UserCreate.model_validate(json.loads(msg.value.decode('utf-8')))
-            await user_service.create_user(
-                user_create
+            user_create = UserCreate.model_validate(
+                json.loads(msg.value.decode("utf-8"))
             )
+            await user_service.create_user(user_create)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -58,7 +60,6 @@ def main():
         finally:
             kafka.stop()
             postgres.stop()
-
 
     app = FastAPI(lifespan=lifespan, title="Core API", version="1.0.0")
 
@@ -79,7 +80,7 @@ def main():
     async def create_user(user: UserCreate):
         """Create a new user"""
         return await user_service.create_user(user)
-    
+
     @app.delete("/users")
     async def delete_users():
         await user_service.delete_users()

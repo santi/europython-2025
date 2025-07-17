@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from requests import delete
+
 
 from core_api.models.users import UserRepository, UserCreate, UserResponse
 
@@ -24,7 +24,7 @@ class UserService:
         if limit > 100:
             limit = 100  # Business rule: max 100 users per request
         return await self.user_repository.get_users(skip, limit)
-    
+
     async def delete_users(self):
         """Delete all users"""
         await self.user_repository.delete_users()
