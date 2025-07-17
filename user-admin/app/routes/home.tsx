@@ -44,14 +44,6 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
   const { users } = useLoaderData<typeof loader>();
   return (
-    <>
       <UsersList users={users} />
-      <Form method="post">
-        <input type="text" name="name" placeholder="Name" />
-        <input type="email" name="email" placeholder="Email" />
-        <button type="submit">Create User</button>
-      </Form>
-    </>
   );
-  // return <Welcome />;
 }
